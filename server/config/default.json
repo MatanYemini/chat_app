@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://Yemini:316386366@clusternode-gbgoy.mongodb.net/chat?retryWrites=true&w=majority",
+  "jwtSecret": "mysupersecrettoken"
+}
