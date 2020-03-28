@@ -13,14 +13,18 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { register } from '../../actions/user';
 
+// Alerts
+import { useAlert } from 'react-alert';
+
 const Register = ({ register, isAuthenticated }) => {
   let [formData, setFormData] = useState({
     username: '',
     password: '',
-    passwordConfirmation: '',
-    errors: []
+    passwordConfirmation: ''
   });
-  let { username, password, passwordConfirmation, errors } = formData;
+  const alert = useAlert();
+
+  let { username, password, passwordConfirmation } = formData;
 
   const isEmptyForm = () => {
     return !username.length || !password.length || !passwordConfirmation.length;
@@ -37,16 +41,14 @@ const Register = ({ register, isAuthenticated }) => {
   };
 
   const isFormValid = () => {
-    // errors = [];
-    let error;
-
     if (isEmptyForm()) {
-      error = { message: 'Fill all fields' };
-      setFormData({ ...formData, [errors]: (errors[0] = error) });
+      alert.error('Fill all fields');
       return false;
     } else if (!isPasswordValid()) {
-      error = { message: 'Password is invalid' };
-      setFormData({ ...formData, [errors]: (errors[0] = error) });
+      alert.error('Password is invalid');
+      return false;
+    } else if (username.length < 3) {
+      alert.error('Username Not Valid - at least 3 characters');
       return false;
     }
     return true;
@@ -58,29 +60,15 @@ const Register = ({ register, isAuthenticated }) => {
     if (!isFormValid()) {
       return;
     }
-    setFormData({ ...formData, [errors]: delete errors[0] });
     e.preventDefault();
 
-    if (password !== passwordConfirmation) {
-      //setAlert('Password do not match', 'danger'); // instaed of using props (at top take props as argument and then props.setAlert)
-      console.log('No match with passwords');
+    let msg = await register({ username, password });
+    console.log(msg);
+    if (msg) {
+      let error = { message: msg };
+      alert.error(msg);
     } else {
-      let msg = await register({ username, password });
-      console.log(msg);
-      if (msg) {
-        let error = { message: msg };
-        setFormData({ ...formData, [errors]: (errors[0] = error) });
-      } else {
-        setFormData({ ...formData, [errors]: (errors = []) });
-      }
-    }
-  };
-
-  let displayErrors = errors => {
-    if (errors.length > 0) {
-      return errors.map((error, i) => <p key={i}>{error.message}</p>);
-    } else {
-      return null;
+      alert.success('User Registered!');
     }
   };
 
@@ -88,6 +76,7 @@ const Register = ({ register, isAuthenticated }) => {
   //   if (isAuthenticated) {
   //     return <Redirect to='/' />;
   //   }
+
   return (
     <Grid textAlign='center' verticalAlign='middle' className='app'>
       <Grid.Column style={{ maxWidth: 450 }}>
@@ -135,12 +124,6 @@ const Register = ({ register, isAuthenticated }) => {
             </Button>
           </Segment>
         </Form>
-        {errors.length > 0 && (
-          <Message error>
-            <h3>Error</h3>
-            {displayErrors(errors)}
-          </Message>
-        )}
         <Message>
           Already a user? <Link to='/login'>Login</Link>
         </Message>
