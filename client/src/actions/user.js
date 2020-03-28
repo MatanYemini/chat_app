@@ -21,16 +21,12 @@ export const register = ({ username, password }) => async dispatch => {
       payload: res.data
     });
     dispatch(loadUser());
-  } catch (err) {
-    console.log(err.message);
-
-    // if (errors) {
-    //     console.log(error)
-    //   errors.forEach(error => dispatch(setAlert(error.msg), 'danger'));
-    // }
-
+  } catch (error) {
     dispatch({
       type: REGISTER_FAIL
     });
+    if (error.response.data) {
+      return error.response.data.msg;
+    }
   }
 };
