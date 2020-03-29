@@ -1,7 +1,13 @@
 import axios from 'axios';
 //import { setAlert } from './alert';
 import setAuthToken from '../utils/setAuthToken';
-import { USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL } from './types';
+import {
+  USER_LOADED,
+  AUTH_ERROR,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  LOGOUT
+} from './types';
 
 // Load User
 export const loadUser = () => async dispatch => {
@@ -46,5 +52,13 @@ export const login = ({ username, password }) => async dispatch => {
     if (error.response.data) {
       return error.response.data.msg;
     }
+  }
+};
+
+export const logout = () => async dispatch => {
+  try {
+    dispatch({ type: LOGOUT });
+  } catch (error) {
+    console.log('Could not log out');
   }
 };

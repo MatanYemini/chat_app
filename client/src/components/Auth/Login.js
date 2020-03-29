@@ -62,9 +62,9 @@ const Login = ({ login, isAuthenticated }) => {
   };
 
   //Redirect if logged in
-  // if (isAuthenticated) {
-  //   return <Redirect to='/' />;
-  // }
+  if (isAuthenticated) {
+    return <Redirect to='/' />;
+  }
 
   return (
     <Grid textAlign='center' verticalAlign='middle' className='app'>
