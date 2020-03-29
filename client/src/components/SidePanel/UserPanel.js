@@ -4,6 +4,7 @@ import { Grid, Header, Icon, Dropdown } from 'semantic-ui-react';
 import { logout } from '../../actions/auth';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import Avatar from 'react-avatar';
 
 const UserPanel = ({ logout, user, isAuthenticated }) => {
   console.log(user);
@@ -16,10 +17,6 @@ const UserPanel = ({ logout, user, isAuthenticated }) => {
         </span>
       ),
       disabled: true
-    },
-    {
-      key: 'avatar',
-      text: <span>Change Avatar</span>
     },
     {
       key: 'signout',
@@ -45,7 +42,13 @@ const UserPanel = ({ logout, user, isAuthenticated }) => {
         {/* User Dropdown */}
         <Header style={{ padding: '0.25em' }} as='h4' inverted>
           <Dropdown
-            trigger={<span>{user.username}</span>}
+            trigger={
+              <span>
+                <Avatar name={user.username} size='35' round={true} />
+                {'  '}
+                {user.username}
+              </span>
+            }
             options={dropDownOptions()}
           />
         </Header>
