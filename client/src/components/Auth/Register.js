@@ -73,14 +73,14 @@ const Register = ({ register, isAuthenticated }) => {
   };
 
   //Redirect if logged in
-  // if (isAuthenticated) {
-  //   return <Redirect to='/' />;
-  // }
+  if (isAuthenticated) {
+    return <Redirect to='/' />;
+  }
 
   return (
     <Grid textAlign='center' verticalAlign='middle' className='app'>
       <Grid.Column style={{ maxWidth: 450 }}>
-        <Header as='h2' icon color='orange' textAlign='center'>
+        <Header as='h1' icon color='orange' textAlign='center'>
           <Icon name='rocketchat' color='orange' />
           Register for DevChat
         </Header>
