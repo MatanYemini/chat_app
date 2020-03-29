@@ -3,6 +3,7 @@ const connectDB = require('./config/db');
 const app = express();
 const userRouter = require('./routes/api/users');
 const authRouter = require('./routes/api/auth');
+const channelRouter = require('./routes/api/channel');
 
 connectDB();
 
@@ -12,6 +13,7 @@ app.use(express.json({ extended: false }));
 app.get('/', (req, res) => res.send('API RUNNING'));
 app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/channel', channelRouter);
 
 app.use((error, req, res, next) => {
   console.log(error);
