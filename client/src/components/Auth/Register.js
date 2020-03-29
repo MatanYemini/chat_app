@@ -20,11 +20,12 @@ const Register = ({ register, isAuthenticated }) => {
   let [formData, setFormData] = useState({
     username: '',
     password: '',
-    passwordConfirmation: ''
+    passwordConfirmation: '',
+    loading: false
   });
   const alert = useAlert();
 
-  let { username, password, passwordConfirmation } = formData;
+  let { username, password, passwordConfirmation, loading } = formData;
 
   const isEmptyForm = () => {
     return !username.length || !password.length || !passwordConfirmation.length;
@@ -57,25 +58,24 @@ const Register = ({ register, isAuthenticated }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async e => {
+    e.preventDefault();
     if (!isFormValid()) {
       return;
     }
-    e.preventDefault();
-
+    setFormData({ ...formData, loading: true });
     let msg = await register({ username, password });
-    console.log(msg);
     if (msg) {
-      let error = { message: msg };
       alert.error(msg);
     } else {
       alert.success('User Registered!');
     }
+    setFormData({ ...formData, loading: false });
   };
 
-  // Redirect if logged in
-  //   if (isAuthenticated) {
-  //     return <Redirect to='/' />;
-  //   }
+  //Redirect if logged in
+  // if (isAuthenticated) {
+  //   return <Redirect to='/' />;
+  // }
 
   return (
     <Grid textAlign='center' verticalAlign='middle' className='app'>
@@ -119,7 +119,13 @@ const Register = ({ register, isAuthenticated }) => {
               type='password'
             />
 
-            <Button color='orange' fluid size='large'>
+            <Button
+              disabled={loading}
+              className={loading ? 'loading' : ''}
+              color='orange'
+              fluid
+              size='large'
+            >
               Submit
             </Button>
           </Segment>
