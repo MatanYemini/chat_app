@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Grid, Header, Icon, Dropdown } from 'semantic-ui-react';
 import { logout } from '../../actions/auth';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
-const UserPanel = ({ logout, user }) => {
+const UserPanel = ({ logout, user, isAuthenticated }) => {
   console.log(user);
   const dropDownOptions = () => [
     {
@@ -25,6 +26,12 @@ const UserPanel = ({ logout, user }) => {
       text: <span onClick={logout}>Sign Out</span>
     }
   ];
+
+  // Redirect if not logged in
+  if (!isAuthenticated) {
+    return <Redirect to='/login' />;
+  }
+
   return (
     <Grid style={{ background: '#4c3c4c' }}>
       <Grid.Column>
@@ -49,11 +56,13 @@ const UserPanel = ({ logout, user }) => {
 
 UserPanel.propTypes = {
   logout: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
-  user: state.auth.user
+  user: state.auth.user,
+  isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(mapStateToProps, { logout })(UserPanel);

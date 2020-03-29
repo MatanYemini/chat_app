@@ -56,6 +56,7 @@ export const login = ({ username, password }) => async dispatch => {
 };
 
 export const logout = () => async dispatch => {
+  console.log('here');
   try {
     dispatch({ type: LOGOUT });
   } catch (error) {
