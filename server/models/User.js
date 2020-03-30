@@ -10,15 +10,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  interests: [
+  channels: [
     {
-      hashtag: {
-        type: String,
-        required: true
-      },
-      notifications: {
-        type: Number,
-        default: 0
+      channel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'channel'
       }
     }
   ],

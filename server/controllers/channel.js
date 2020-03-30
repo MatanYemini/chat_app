@@ -12,19 +12,22 @@ exports.addChannel = async (req, res, next) => {
   const title = req.body.title;
   const details = req.body.details;
 
-  let exists = await User.findOne({ _id: userId });
-  if (!exists) {
+  let created_user = await User.findOne({ _id: userId });
+  if (!created_user) {
     return res.status(400).json({ msg: 'User is not logged in!' });
   }
 
   try {
     channel = new Channel({
-      title,
-      details,
-      userId
+      title: title,
+      details: details,
+      createdBy: userId
     });
-
+    // Saving the channel
     await channel.save();
+    // Saving the channel in user
+    created_user.channels.unshift(channel);
+    await created_user.save();
 
     //   const payload = {
     //     user: {
@@ -39,9 +42,12 @@ exports.addChannel = async (req, res, next) => {
   }
 };
 
-// try {
-//     return res.json(req.user);
-//   } catch (error) {
-//     return res.status(400).json({ errors: errors.array() });
-//   }
-// };
+exports.getChannels = async (req, res) => {
+  try {
+    const user = await (await User.findById(req.user.id)).select('-password');
+    const userChannels = user.channels;
+    res.status(200).json({ channels: userChannels });
+  } catch (error) {
+    res.status(500).send('Could not get user channels');
+  }
+};
