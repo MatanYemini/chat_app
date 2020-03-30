@@ -1,6 +1,8 @@
 import React, { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Icon, Modal, Form, Input, Button } from 'semantic-ui-react';
+// Alerts
+import { useAlert } from 'react-alert';
 
 const Channels = props => {
   let [formData, setFormData] = useState({
@@ -9,12 +11,35 @@ const Channels = props => {
     channelDetails: '',
     modal: false
   });
+  const alert = useAlert();
   let { channels, channelName, channelDetails, modal } = formData;
+
+  const isformValid = () => {
+    if (channelName.length < 3) {
+      alert.error('Not Valid Channel Name');
+      return false;
+    } else if (channelDetails.length < 4) {
+      alert.error('Not Valid Channel Details');
+      return false;
+    }
+    return true;
+  };
 
   const closeModal = () => setFormData({ modal: false });
   const openModal = () => setFormData({ modal: true });
 
-  const onChange = e => setFormData({ [e.target.name]: e.target.value });
+  const onChange = e =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = e => {
+    e.preventDefault();
+    if (channelName && channelDetails) {
+      if (!isformValid()) {
+        return;
+      }
+      console.log('added channel');
+    }
+  };
 
   return (
     <Fragment>
@@ -32,7 +57,7 @@ const Channels = props => {
       <Modal basic open={modal} onClose={closeModal}>
         <Modal.Header>Add a Channel</Modal.Header>
         <Modal.Content>
-          <Form>
+          <Form onSubmit={e => onSubmit(e)}>
             <Form.Field>
               <Input
                 fluid
@@ -52,7 +77,7 @@ const Channels = props => {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='green' inverted>
+          <Button color='green' inverted onClick={e => onSubmit(e)}>
             <Icon name='checkmark' /> Add
           </Button>
           <Button color='red' inverted onClick={closeModal}>
