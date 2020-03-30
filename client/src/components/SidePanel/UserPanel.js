@@ -7,7 +7,6 @@ import { Redirect } from 'react-router-dom';
 import Avatar from 'react-avatar';
 
 const UserPanel = ({ logout, user, isAuthenticated }) => {
-  console.log(user);
   const dropDownOptions = () => [
     {
       key: 'user',

@@ -14,7 +14,6 @@ export const addChannel = ({ title, details }) => async dispatch => {
       'Content-Type': 'application/json'
     }
   };
-  console.log('here2');
   const body = JSON.stringify({ title, details });
 
   try {
@@ -28,7 +27,7 @@ export const addChannel = ({ title, details }) => async dispatch => {
     dispatch({
       type: ADD_CHANNEL_FAIL
     });
-    if (error.response.data) {
+    if (error && error.response && error.response.data) {
       return error.response.data.msg;
     }
   }
@@ -42,6 +41,11 @@ export const getUserChannels = () => async dispatch => {
       type: GET_CHANNELS,
       payload: res.data
     });
+    if (res && res.data && res.data.channels) {
+      return res.data.channels;
+    } else {
+      return [];
+    }
   } catch (error) {
     dispatch({
       type: CHANNELS_ERROR

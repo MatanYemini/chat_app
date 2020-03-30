@@ -7,26 +7,23 @@ import { useAlert } from 'react-alert';
 import { getUserChannels, addChannel } from '../../actions/channel';
 import { connect } from 'react-redux';
 
-const Channels = ({ addChannel, getUserChannels }) => {
+const Channels = ({ addChannel, getUserChannels, userChannels, state }) => {
   let [formData, setFormData] = useState({
     channels: [],
     title: '',
     details: '',
-    modal: false,
-    loadedChannels: []
+    modal: false
   });
   const alert = useAlert();
-  //   useEffect(() => {
-  //     loadUserChannels();
-  //   }, [loadUserChannels]);
+  useEffect(() => {
+    loadUserChannels();
+  }, []);
 
-  let { channels, title, details, modal, loadedChannels } = formData;
+  let { channels, title, details, modal } = formData;
 
-  //   const loadUserChannels = async () => {
-  //     let loaded = await getUserChannels();
-  //     setFormData({ ...formData, [loadedChannels]: loaded });
-  //     console.log(loadedChannels);
-  //   };
+  const loadUserChannels = async () => {
+    setFormData({ channels: await getUserChannels() });
+  };
 
   const isformValid = () => {
     if (title.length < 3) {
@@ -52,7 +49,6 @@ const Channels = ({ addChannel, getUserChannels }) => {
         return;
       }
       let msg = await addChannel({ title, details });
-      console.log('here3');
       if (msg) {
         alert.error(msg);
       } else {
@@ -111,7 +107,15 @@ const Channels = ({ addChannel, getUserChannels }) => {
 
 Channels.propTypes = {
   addChannel: PropTypes.func.isRequired,
-  getUserChannels: PropTypes.func.isRequired
+  getUserChannels: PropTypes.func.isRequired,
+  userChannels: PropTypes.object
 };
 
-export default connect(null, { addChannel, getUserChannels })(Channels);
+const mapStateToProps = state => ({
+  userChannels: state.channel,
+  state: state
+});
+
+export default connect(mapStateToProps, { addChannel, getUserChannels })(
+  Channels
+);

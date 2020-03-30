@@ -26,7 +26,7 @@ exports.login = async (req, res, next) => {
     let loadedUser = await User.findOne({ username: username });
     if (!loadedUser) {
       console.log(username);
-      return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
+      return res.status(400).json({ msg: 'Invalid Credentials' });
     }
     console.log(loadedUser.password);
     const isMatch = await bcrypt.compare(password, loadedUser.password);
@@ -43,7 +43,13 @@ exports.login = async (req, res, next) => {
     const token = jwt.sign(payload, config.get('jwtSecret'), {
       expiresIn: '3h'
     });
-    res.status(200).json({ token: token, userId: loadedUser._id.toString() });
+    res
+      .status(200)
+      .json({
+        token: token,
+        user: loadedUser,
+        userId: loadedUser._id.toString()
+      });
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server Error');

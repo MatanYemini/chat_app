@@ -29,13 +29,15 @@ exports.addChannel = async (req, res, next) => {
     created_user.channels.unshift(channel);
     await created_user.save();
 
-    //   const payload = {
-    //     user: {
-    //       id: user._id.toString() // mongoose does abstraction for it (_id = id)
-    //     }
-    //   };
+    const payload = {
+      channel: {
+        channel: channel
+      }
+    };
 
-    res.status(201).json({ message: 'Channel Created!', channel: channel });
+    res
+      .status(201)
+      .json({ message: 'Channel Created!', channels: created_user.channels });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ msg: 'Channel Adding Error' });
@@ -44,7 +46,7 @@ exports.addChannel = async (req, res, next) => {
 
 exports.getChannels = async (req, res) => {
   try {
-    const user = await (await User.findById(req.user.id)).select('-password');
+    const user = await User.findById(req.user.id);
     const userChannels = user.channels;
     res.status(200).json({ channels: userChannels });
   } catch (error) {

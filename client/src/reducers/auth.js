@@ -3,11 +3,7 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  LOGOUT,
-  CHANNELS_ERROR,
-  GET_CHANNELS,
-  ADD_CHANNEL,
-  ADD_CHANNEL_FAIL
+  LOGOUT
 } from '../actions/types';
 
 const initialState = {
@@ -19,11 +15,7 @@ const initialState = {
 
 export default function(state = initialState, action) {
   const { type, payload } = action;
-
   switch (type) {
-    case ADD_CHANNEL:
-    case CHANNELS_ERROR:
-    case ADD_CHANNEL_FAIL:
     case USER_LOADED:
       return {
         ...state,
@@ -31,13 +23,6 @@ export default function(state = initialState, action) {
         loading: false,
         user: payload
       };
-    // case GET_CHANNELS:
-    //   return {
-    //     ...state,
-    //     isAuthenticated: true,
-    //     loading: false,
-    //     channels: payload
-    //   };
     case LOGIN_SUCCESS:
       localStorage.setItem('token', payload.token);
       return {
