@@ -26,7 +26,7 @@ exports.addChannel = async (req, res, next) => {
     // Saving the channel
     await channel.save();
     // Saving the channel in user
-    created_user.channels.unshift(channel);
+    created_user.interests.channels.unshift(channel);
     await created_user.save();
 
     const payload = {
@@ -35,9 +35,10 @@ exports.addChannel = async (req, res, next) => {
       }
     };
 
-    res
-      .status(201)
-      .json({ message: 'Channel Created!', channels: created_user.channels });
+    res.status(201).json({
+      message: 'Channel Created!',
+      channels: created_user.interests.channels
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ msg: 'Channel Adding Error' });
@@ -47,8 +48,19 @@ exports.addChannel = async (req, res, next) => {
 exports.getChannels = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    const userChannels = user.channels;
-    res.status(200).json({ channels: userChannels });
+    const userChannels = user.interests.channels;
+    let data = [];
+    let temp;
+    for (let index = 0; index < userChannels.length; index++) {
+      const element = userChannels[index];
+      let value = element._id;
+      temp = await Channel.findById(value);
+      data.push(temp);
+    }
+
+    console.log(data);
+
+    res.status(200).json({ channels: data });
   } catch (error) {
     res.status(500).send('Could not get user channels');
   }

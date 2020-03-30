@@ -7,7 +7,7 @@ import { useAlert } from 'react-alert';
 import { getUserChannels, addChannel } from '../../actions/channel';
 import { connect } from 'react-redux';
 
-const Channels = ({ addChannel, getUserChannels, userChannels, state }) => {
+const Channels = ({ addChannel, getUserChannels, userChannels }) => {
   let [formData, setFormData] = useState({
     channels: [],
     title: '',
@@ -36,7 +36,10 @@ const Channels = ({ addChannel, getUserChannels, userChannels, state }) => {
     return true;
   };
 
-  const closeModal = () => setFormData({ modal: false });
+  const closeModal = () => {
+    setFormData({ modal: false });
+    loadUserChannels();
+  };
   const openModal = () => setFormData({ modal: true });
 
   const onChange = e =>
@@ -57,6 +60,14 @@ const Channels = ({ addChannel, getUserChannels, userChannels, state }) => {
     }
   };
 
+  // displayChannels = channels => (
+  //   channels.length > 0 && channels.map(channels => (
+  //     <Menu.Item key={channel.id} onClick={() => console.log(channel)} name={channel.nam}
+
+  //     </Menu.Item>
+  //   ))
+  // )
+
   return (
     <Fragment>
       <Menu.Menu style={{ paddingBottom: '2em' }}>
@@ -68,9 +79,16 @@ const Channels = ({ addChannel, getUserChannels, userChannels, state }) => {
           <Icon name='add' onClick={openModal} />
         </Menu.Item>
         {/* Channels */}
+        {/* {displayChannels(channels)} */}
       </Menu.Menu>
       {/* Channel Modals */}
-      <Modal basic open={modal} onClose={closeModal}>
+      <Modal
+        basic
+        open={modal}
+        closeOnDimmerClick={true}
+        closeOnEscape
+        onClose={closeModal}
+      >
         <Modal.Header>Add a Channel</Modal.Header>
         <Modal.Content>
           <Form onSubmit={e => onSubmit(e)}>
@@ -107,15 +125,7 @@ const Channels = ({ addChannel, getUserChannels, userChannels, state }) => {
 
 Channels.propTypes = {
   addChannel: PropTypes.func.isRequired,
-  getUserChannels: PropTypes.func.isRequired,
-  userChannels: PropTypes.object
+  getUserChannels: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-  userChannels: state.channel,
-  state: state
-});
-
-export default connect(mapStateToProps, { addChannel, getUserChannels })(
-  Channels
-);
+export default connect(null, { addChannel, getUserChannels })(Channels);
