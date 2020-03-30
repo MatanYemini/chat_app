@@ -6,3 +6,7 @@ export const AUTH_ERROR = 'AUTH_ERROR';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAIL = 'LOGIN_FAILS';
 export const LOGOUT = 'LOGOUT';
+export const ADD_CHANNEL = 'ADD_CHANNEL';
+export const GET_CHANNELS = 'GET_CHANNELS';
+export const CHANNELS_ERROR = 'CHANNELS_ERROR';
+export const ADD_CHANNEL_FAIL = 'ADD_CHANNEL_FAIL';
