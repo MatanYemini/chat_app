@@ -1,24 +1,38 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Icon, Modal, Form, Input, Button } from 'semantic-ui-react';
 // Alerts
 import { useAlert } from 'react-alert';
+// Redux
+import { getUserChannels, addChannel } from '../../actions/channel';
+import { connect } from 'react-redux';
 
-const Channels = props => {
+const Channels = ({ addChannel, getUserChannels }) => {
   let [formData, setFormData] = useState({
     channels: [],
-    channelName: '',
-    channelDetails: '',
-    modal: false
+    title: '',
+    details: '',
+    modal: false,
+    loadedChannels: []
   });
   const alert = useAlert();
-  let { channels, channelName, channelDetails, modal } = formData;
+  //   useEffect(() => {
+  //     loadUserChannels();
+  //   }, [loadUserChannels]);
+
+  let { channels, title, details, modal, loadedChannels } = formData;
+
+  //   const loadUserChannels = async () => {
+  //     let loaded = await getUserChannels();
+  //     setFormData({ ...formData, [loadedChannels]: loaded });
+  //     console.log(loadedChannels);
+  //   };
 
   const isformValid = () => {
-    if (channelName.length < 3) {
+    if (title.length < 3) {
       alert.error('Not Valid Channel Name');
       return false;
-    } else if (channelDetails.length < 4) {
+    } else if (details.length < 5) {
       alert.error('Not Valid Channel Details');
       return false;
     }
@@ -31,13 +45,19 @@ const Channels = props => {
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
-    if (channelName && channelDetails) {
+    if (title && details) {
       if (!isformValid()) {
         return;
       }
-      console.log('added channel');
+      let msg = await addChannel({ title, details });
+      console.log('here3');
+      if (msg) {
+        alert.error(msg);
+      } else {
+        alert.success('Channel Added!');
+      }
     }
   };
 
@@ -62,7 +82,7 @@ const Channels = props => {
               <Input
                 fluid
                 label='Name of Channel'
-                name='channelName'
+                name='title'
                 onChange={e => onChange(e)}
               />
             </Form.Field>
@@ -70,7 +90,7 @@ const Channels = props => {
               <Input
                 fluid
                 label='About the Channel'
-                name='channelDetails'
+                name='details'
                 onChange={e => onChange(e)}
               />
             </Form.Field>
@@ -89,6 +109,9 @@ const Channels = props => {
   );
 };
 
-Channels.propTypes = {};
+Channels.propTypes = {
+  addChannel: PropTypes.func.isRequired,
+  getUserChannels: PropTypes.func.isRequired
+};
 
-export default Channels;
+export default connect(null, { addChannel, getUserChannels })(Channels);

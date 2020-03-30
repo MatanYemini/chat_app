@@ -5,6 +5,7 @@ import UserPanel from './UserPanel';
 import Channels from './Channels';
 
 const SidePanel = props => {
+  // Check Authentication
   return (
     <Menu
       size='large'

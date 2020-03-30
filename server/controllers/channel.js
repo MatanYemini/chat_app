@@ -38,7 +38,7 @@ exports.addChannel = async (req, res, next) => {
     res.status(201).json({ message: 'Channel Created!', channel: channel });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ msg: 'Channel Adding Error' });
   }
 };
 
