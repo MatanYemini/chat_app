@@ -13,14 +13,16 @@ const Channels = ({ addChannel, getUserChannels, setCurrentChannel }) => {
     channels: [],
     title: '',
     details: '',
-    modal: false
+    modal: false,
+    activeChannel: ''
   });
   const alert = useAlert();
+
   useEffect(() => {
     loadUserChannels();
   }, []);
 
-  let { channels, title, details, modal } = formData;
+  let { channels, title, details, modal, activeChannel } = formData;
 
   const loadUserChannels = async () => {
     setFormData({ channels: await getUserChannels() });
@@ -38,6 +40,7 @@ const Channels = ({ addChannel, getUserChannels, setCurrentChannel }) => {
   };
 
   const displayChannels = () =>
+    channels &&
     channels.length > 0 &&
     channels.map(channel => (
       <Menu.Item
@@ -45,6 +48,7 @@ const Channels = ({ addChannel, getUserChannels, setCurrentChannel }) => {
         onClick={() => changeChannel(channel)}
         name={title}
         style={{ opacity: 0.7 }}
+        active={channel._id === activeChannel}
       >
         # {channel.title}
       </Menu.Item>
@@ -52,6 +56,7 @@ const Channels = ({ addChannel, getUserChannels, setCurrentChannel }) => {
 
   const changeChannel = channel => {
     setCurrentChannel(channel);
+    setFormData({ ...formData, activeChannel: channel._id });
   };
 
   const closeModal = () => {

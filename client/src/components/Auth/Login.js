@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Grid,
@@ -20,9 +20,16 @@ const Login = ({ login, isAuthenticated }) => {
   let [formData, setFormData] = useState({
     username: '',
     password: '',
-    loading: false
+    loading: false,
+    mounted: false
   });
   const alert = useAlert();
+  useEffect(() => {
+    setFormData({ ...formData, mounted: true });
+    return () => {
+      setFormData({ ...formData, loading: false });
+    };
+  }, []);
 
   let { username, password, loading } = formData;
 
