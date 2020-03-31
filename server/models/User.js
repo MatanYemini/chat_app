@@ -20,14 +20,6 @@ const UserSchema = new mongoose.Schema({
       }
     ]
   },
-  // channels: [
-  //   {
-  //     channel: {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: 'channel'
-  //     }
-  //   }
-  // ],
   date: {
     type: Date,
     default: Date.now
