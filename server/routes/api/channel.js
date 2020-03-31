@@ -9,6 +9,16 @@ const isAuth = require('../../middleware/is-auth');
 // @access  Privcte
 router.get('/', isAuth, channelController.getChannels);
 
+// @route   POST api/channel/add/message
+// @desc    Adding a Channel
+// @access  Private
+router.post(
+  '/add/message',
+  [check('content').isLength({ min: 1 })],
+  isAuth,
+  channelController.addMessage
+);
+
 // @route   POST api/channel/add
 // @desc    Adding a Channel
 // @access  Private
