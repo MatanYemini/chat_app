@@ -4,7 +4,8 @@ import {
   ADD_CHANNEL,
   ADD_CHANNEL_FAIL,
   GET_CHANNELS,
-  CHANNELS_ERROR
+  CHANNELS_ERROR,
+  SET_CURRENT_CHANNEL
 } from './types';
 
 // Add Channel
@@ -41,7 +42,8 @@ export const getUserChannels = () => async dispatch => {
       type: GET_CHANNELS,
       payload: res.data
     });
-    if (res && res.data && res.data.channels) {
+    console.log(res.data);
+    if (res && res.data && res.data && res.data.channels) {
       return res.data.channels;
     } else {
       return [];
@@ -54,4 +56,15 @@ export const getUserChannels = () => async dispatch => {
       return error.response.data.msg;
     }
   }
+};
+
+// Set Current Channel
+export const setCurrentChannel = channel => async dispatch => {
+  console.log('action channel');
+  return dispatch({
+    type: SET_CURRENT_CHANNEL,
+    payload: {
+      currentChannel: channel
+    }
+  });
 };

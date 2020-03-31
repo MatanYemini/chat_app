@@ -5,9 +5,10 @@ import { Menu, Icon, Modal, Form, Input, Button } from 'semantic-ui-react';
 import { useAlert } from 'react-alert';
 // Redux
 import { getUserChannels, addChannel } from '../../actions/channel';
+import { setCurrentChannel } from '../../actions/channel';
 import { connect } from 'react-redux';
 
-const Channels = ({ addChannel, getUserChannels, userChannels }) => {
+const Channels = ({ addChannel, getUserChannels, setCurrentChannel }) => {
   let [formData, setFormData] = useState({
     channels: [],
     title: '',
@@ -41,13 +42,17 @@ const Channels = ({ addChannel, getUserChannels, userChannels }) => {
     channels.map(channel => (
       <Menu.Item
         key={channel._id}
-        onClick={() => console.log(channel)}
+        onClick={() => changeChannel(channel)}
         name={title}
         style={{ opacity: 0.7 }}
       >
         # {channel.title}
       </Menu.Item>
     ));
+
+  const changeChannel = channel => {
+    setCurrentChannel(channel);
+  };
 
   const closeModal = () => {
     setFormData({ modal: false });
@@ -73,14 +78,6 @@ const Channels = ({ addChannel, getUserChannels, userChannels }) => {
       }
     }
   };
-
-  // displayChannels = channels => (
-  //   channels.length > 0 && channels.map(channels => (
-  //     <Menu.Item key={channel.id} onClick={() => console.log(channel)} name={channel.nam}
-
-  //     </Menu.Item>
-  //   ))
-  // )
 
   return (
     <Fragment>
@@ -142,4 +139,8 @@ Channels.propTypes = {
   getUserChannels: PropTypes.func.isRequired
 };
 
-export default connect(null, { addChannel, getUserChannels })(Channels);
+export default connect(null, {
+  addChannel,
+  getUserChannels,
+  setCurrentChannel
+})(Channels);
