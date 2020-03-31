@@ -47,7 +47,7 @@ exports.addChannel = async (req, res, next) => {
 
 exports.getChannels = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).select('-password');
     const userChannels = user.interests.channels;
     let data = [];
     let temp;
@@ -57,8 +57,6 @@ exports.getChannels = async (req, res) => {
       temp = await Channel.findById(value);
       data.push(temp);
     }
-
-    console.log(data);
 
     res.status(200).json({ channels: data });
   } catch (error) {

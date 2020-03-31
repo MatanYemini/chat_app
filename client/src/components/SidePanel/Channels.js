@@ -36,6 +36,19 @@ const Channels = ({ addChannel, getUserChannels, userChannels }) => {
     return true;
   };
 
+  const displayChannels = () =>
+    channels.length > 0 &&
+    channels.map(channel => (
+      <Menu.Item
+        key={channel._id}
+        onClick={() => console.log(channel)}
+        name={title}
+        style={{ opacity: 0.7 }}
+      >
+        # {channel.title}
+      </Menu.Item>
+    ));
+
   const closeModal = () => {
     setFormData({ modal: false });
     loadUserChannels();
@@ -55,6 +68,7 @@ const Channels = ({ addChannel, getUserChannels, userChannels }) => {
       if (msg) {
         alert.error(msg);
       } else {
+        closeModal();
         alert.success('Channel Added!');
       }
     }
@@ -79,7 +93,7 @@ const Channels = ({ addChannel, getUserChannels, userChannels }) => {
           <Icon name='add' onClick={openModal} />
         </Menu.Item>
         {/* Channels */}
-        {/* {displayChannels(channels)} */}
+        {displayChannels()}
       </Menu.Menu>
       {/* Channel Modals */}
       <Modal
