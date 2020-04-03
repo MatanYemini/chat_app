@@ -5,28 +5,28 @@ import { Menu, Icon, Modal, Form, Input, Button } from 'semantic-ui-react';
 import { useAlert } from 'react-alert';
 // Redux
 import { getUserChannels, addChannel } from '../../actions/channel';
+import { setCurrentChannel } from '../../actions/channel';
 import { connect } from 'react-redux';
 
-const Channels = ({ addChannel, getUserChannels }) => {
+const Channels = ({ addChannel, getUserChannels, setCurrentChannel }) => {
   let [formData, setFormData] = useState({
     channels: [],
     title: '',
     details: '',
     modal: false,
-    loadedChannels: []
+    activeChannel: ''
   });
   const alert = useAlert();
-  //   useEffect(() => {
-  //     loadUserChannels();
-  //   }, [loadUserChannels]);
 
-  let { channels, title, details, modal, loadedChannels } = formData;
+  useEffect(() => {
+    loadUserChannels();
+  }, []);
 
-  //   const loadUserChannels = async () => {
-  //     let loaded = await getUserChannels();
-  //     setFormData({ ...formData, [loadedChannels]: loaded });
-  //     console.log(loadedChannels);
-  //   };
+  let { channels, title, details, modal, activeChannel } = formData;
+
+  const loadUserChannels = async () => {
+    setFormData({ channels: await getUserChannels() });
+  };
 
   const isformValid = () => {
     if (title.length < 3) {
@@ -39,7 +39,30 @@ const Channels = ({ addChannel, getUserChannels }) => {
     return true;
   };
 
-  const closeModal = () => setFormData({ modal: false });
+  const displayChannels = () =>
+    channels &&
+    channels.length > 0 &&
+    channels.map(channel => (
+      <Menu.Item
+        key={channel._id}
+        onClick={() => changeChannel(channel)}
+        name={title}
+        style={{ opacity: 0.7 }}
+        active={channel._id === activeChannel}
+      >
+        # {channel.title}
+      </Menu.Item>
+    ));
+
+  const changeChannel = channel => {
+    setCurrentChannel(channel);
+    setFormData({ ...formData, activeChannel: channel._id });
+  };
+
+  const closeModal = () => {
+    setFormData({ modal: false });
+    loadUserChannels();
+  };
   const openModal = () => setFormData({ modal: true });
 
   const onChange = e =>
@@ -52,10 +75,10 @@ const Channels = ({ addChannel, getUserChannels }) => {
         return;
       }
       let msg = await addChannel({ title, details });
-      console.log('here3');
       if (msg) {
         alert.error(msg);
       } else {
+        closeModal();
         alert.success('Channel Added!');
       }
     }
@@ -72,9 +95,16 @@ const Channels = ({ addChannel, getUserChannels }) => {
           <Icon name='add' onClick={openModal} />
         </Menu.Item>
         {/* Channels */}
+        {displayChannels()}
       </Menu.Menu>
       {/* Channel Modals */}
-      <Modal basic open={modal} onClose={closeModal}>
+      <Modal
+        basic
+        open={modal}
+        closeOnDimmerClick={true}
+        closeOnEscape
+        onClose={closeModal}
+      >
         <Modal.Header>Add a Channel</Modal.Header>
         <Modal.Content>
           <Form onSubmit={e => onSubmit(e)}>
@@ -114,4 +144,8 @@ Channels.propTypes = {
   getUserChannels: PropTypes.func.isRequired
 };
 
-export default connect(null, { addChannel, getUserChannels })(Channels);
+export default connect(null, {
+  addChannel,
+  getUserChannels,
+  setCurrentChannel
+})(Channels);

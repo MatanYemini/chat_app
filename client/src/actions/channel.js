@@ -4,7 +4,8 @@ import {
   ADD_CHANNEL,
   ADD_CHANNEL_FAIL,
   GET_CHANNELS,
-  CHANNELS_ERROR
+  CHANNELS_ERROR,
+  SET_CURRENT_CHANNEL
 } from './types';
 
 // Add Channel
@@ -14,7 +15,6 @@ export const addChannel = ({ title, details }) => async dispatch => {
       'Content-Type': 'application/json'
     }
   };
-  console.log('here2');
   const body = JSON.stringify({ title, details });
 
   try {
@@ -28,7 +28,7 @@ export const addChannel = ({ title, details }) => async dispatch => {
     dispatch({
       type: ADD_CHANNEL_FAIL
     });
-    if (error.response.data) {
+    if (error && error.response && error.response.data) {
       return error.response.data.msg;
     }
   }
@@ -42,6 +42,12 @@ export const getUserChannels = () => async dispatch => {
       type: GET_CHANNELS,
       payload: res.data
     });
+    console.log(res.data);
+    if (res && res.data && res.data && res.data.channels) {
+      return res.data.channels;
+    } else {
+      return [];
+    }
   } catch (error) {
     dispatch({
       type: CHANNELS_ERROR
@@ -50,4 +56,15 @@ export const getUserChannels = () => async dispatch => {
       return error.response.data.msg;
     }
   }
+};
+
+// Set Current Channel
+export const setCurrentChannel = channel => async dispatch => {
+  console.log('action channel');
+  return dispatch({
+    type: SET_CURRENT_CHANNEL,
+    payload: {
+      currentChannel: channel
+    }
+  });
 };

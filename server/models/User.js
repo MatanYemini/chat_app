@@ -10,14 +10,16 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  channels: [
-    {
-      channel: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'channel'
+  interests: {
+    channels: [
+      {
+        channelId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'channel'
+        }
       }
-    }
-  ],
+    ]
+  },
   date: {
     type: Date,
     default: Date.now
